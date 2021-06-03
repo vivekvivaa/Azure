@@ -13,9 +13,9 @@
 				"folderPath": "output",
 				"container": "adftutorial"
 			},
-			"columnDelimiter": ";",
+			"columnDelimiter": "|",
 			"escapeChar": "\\",
-			"quoteChar": "\""
+			"quoteChar": "'"
 		},
 		"schema": []
 	},

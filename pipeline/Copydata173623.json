@@ -4,7 +4,7 @@
 		"activities": [
 			{
 				"name": "Copy_sow",
-				"description": "Test Blob to Blob",
+				"description": "Testing Blob to Blob",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -41,31 +41,18 @@
 					"sink": {
 						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "MergeFiles"
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
 							"quoteAllText": true,
-							"fileExtension": ".txt"
+							"fileExtension": ".csv"
 						}
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": true,
-					"validateDataConsistency": false,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "AzureBlobStorage",
-								"type": "LinkedServiceReference"
-							},
-							"path": "adftutorial"
-						}
-					}
+					"validateDataConsistency": false
 				},
 				"inputs": [
 					{
