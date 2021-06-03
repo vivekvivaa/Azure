@@ -4,7 +4,7 @@
 		"activities": [
 			{
 				"name": "Copy_sow",
-				"description": "Test Blob to Blob",
+				"description": "Testing Blob to Blob",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
