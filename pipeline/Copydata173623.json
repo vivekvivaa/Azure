@@ -51,21 +51,7 @@
 					},
 					"enableStaging": false,
 					"enableSkipIncompatibleRow": true,
-					"validateDataConsistency": false,
-					"logSettings": {
-						"enableCopyActivityLog": true,
-						"copyActivityLogSettings": {
-							"logLevel": "Warning",
-							"enableReliableLogging": false
-						},
-						"logLocationSettings": {
-							"linkedServiceName": {
-								"referenceName": "AzureBlobStorage",
-								"type": "LinkedServiceReference"
-							},
-							"path": "adftutorial"
-						}
-					}
+					"validateDataConsistency": false
 				},
 				"inputs": [
 					{
