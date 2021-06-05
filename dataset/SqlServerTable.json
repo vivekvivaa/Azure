@@ -5,6 +5,14 @@
 			"referenceName": "SqlServeronprem",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"onpremschema": {
+				"type": "string"
+			},
+			"onpremtable": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "Onpremtocloud"
 		},
