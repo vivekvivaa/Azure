@@ -29,6 +29,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "SqlServerSource",
+									"sqlReaderQuery": "SELECT * FROM [@{item().TABLE_SCHEMA}].[@{item().TABLE_NAME}]",
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
@@ -57,11 +58,7 @@
 							"inputs": [
 								{
 									"referenceName": "SqlServerTable",
-									"type": "DatasetReference",
-									"parameters": {
-										"onpremschema": "dbo",
-										"onpremtable": "Persons"
-									}
+									"type": "DatasetReference"
 								}
 							],
 							"outputs": [
