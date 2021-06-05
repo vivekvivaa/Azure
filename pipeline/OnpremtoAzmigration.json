@@ -1,0 +1,7 @@
+{
+	"name": "OnpremtoAzmigration",
+	"properties": {
+		"description": "On prem SQL DB to Azure Migration",
+		"annotations": []
+	}
+}
