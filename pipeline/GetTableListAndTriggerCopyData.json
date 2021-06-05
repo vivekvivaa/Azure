@@ -1,6 +1,7 @@
 {
 	"name": "GetTableListAndTriggerCopyData",
 	"properties": {
+		"description": "Parameterization",
 		"activities": [
 			{
 				"name": "LookupTableList",
