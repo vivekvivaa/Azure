@@ -49,7 +49,7 @@
 					"waitOnCompletion": false,
 					"parameters": {
 						"tableList": {
-							"value": "@activity('LookupTableList').output.valu",
+							"value": "@activity('LookupTableList').output.value",
 							"type": "Expression"
 						}
 					}
