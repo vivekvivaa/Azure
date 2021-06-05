@@ -48,7 +48,8 @@
 									"linkedServiceName": {
 										"referenceName": "linkedServicestaging",
 										"type": "LinkedServiceReference"
-									}
+									},
+									"path": "adfstagedcopytempdata"
 								},
 								"translator": {
 									"type": "TabularTranslator",
