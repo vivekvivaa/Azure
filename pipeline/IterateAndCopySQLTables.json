@@ -46,10 +46,25 @@
 								"enableStaging": true,
 								"stagingSettings": {
 									"linkedServiceName": {
-										"referenceName": "linkedServicestaging",
+										"referenceName": "AzureBlobStorage",
 										"type": "LinkedServiceReference"
 									},
-									"path": "adfstagedcopytempdata"
+									"path": "staging"
+								},
+								"enableSkipIncompatibleRow": false,
+								"logSettings": {
+									"enableCopyActivityLog": true,
+									"copyActivityLogSettings": {
+										"logLevel": "Info",
+										"enableReliableLogging": false
+									},
+									"logLocationSettings": {
+										"linkedServiceName": {
+											"referenceName": "AzureBlobStorage",
+											"type": "LinkedServiceReference"
+										},
+										"path": "logging"
+									}
 								},
 								"translator": {
 									"type": "TabularTranslator",
