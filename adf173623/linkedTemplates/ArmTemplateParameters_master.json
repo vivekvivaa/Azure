@@ -8,6 +8,15 @@
 		"AzureBlobStorage_connectionString": {
 			"value": ""
 		},
+		"AzureSqlDatabase_connectionString": {
+			"value": ""
+		},
+		"SqlServeronprem_connectionString": {
+			"value": ""
+		},
+		"linkedServicestaging_connectionString": {
+			"value": ""
+		},
 		"containerUri": {
 			"value": ""
 		},

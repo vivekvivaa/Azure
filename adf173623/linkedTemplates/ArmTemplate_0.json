@@ -10,6 +10,18 @@
 		"AzureBlobStorage_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage'"
+		},
+		"linkedServicestaging_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'linkedServicestaging'"
+		},
+		"AzureSqlDatabase_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase'"
+		},
+		"SqlServeronprem_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SqlServeronprem'"
 		}
 	},
 	"variables": {
@@ -26,6 +38,29 @@
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlobStorage_connectionString')]"
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/linkedServicestaging')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('linkedServicestaging_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntimeonprem')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
 			},
 			"dependsOn": []
 		},
@@ -91,6 +126,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeonprem",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeonprem')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlServeronprem')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('SqlServeronprem_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeonprem",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeonprem')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Copydata173623')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -98,7 +171,7 @@
 				"activities": [
 					{
 						"name": "Copy_sow",
-						"description": "Testing Blob to Blob",
+						"description": "Testing - Blob to Blob",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -170,6 +243,288 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SourceDataset_sow')]",
 				"[concat(variables('factoryId'), '/datasets/DestinationDataset_sow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"AzTableName": {
+						"type": "string"
+					},
+					"AzSchema": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Onpremtocloud"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "PersonID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LastName",
+						"type": "varchar"
+					},
+					{
+						"name": "FirstName",
+						"type": "varchar"
+					},
+					{
+						"name": "Address",
+						"type": "varchar"
+					},
+					{
+						"name": "City",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().AzSchema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().AzTableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SqlServerTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SqlServeronprem",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Onpremtocloud"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "PersonID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LastName",
+						"type": "varchar"
+					},
+					{
+						"name": "FirstName",
+						"type": "varchar"
+					},
+					{
+						"name": "Address",
+						"type": "varchar"
+					},
+					{
+						"name": "City",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Persons"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SqlServeronprem')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IterateAndCopySQLTables')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "On prem SQL DB to Azure Migration",
+				"activities": [
+					{
+						"name": "IterateSQLTables",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.tableList",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy data1",
+									"description": "Copy data",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": {
+												"value": "SELECT * FROM [@{item().TABLE_SCHEMA}].[@{item().TABLE_NAME}]",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"preCopyScript": {
+												"value": "IF EXISTS (SELECT * FROM [@{item().TABLE_SCHEMA}].[@{item().TABLE_NAME}) TRUNCATE TABLE [@{item().TABLE_SCHEMA}].[@{item().TABLE_NAME}]",
+												"type": "Expression"
+											},
+											"tableOption": "autoCreate",
+											"disableMetricsCollection": false
+										},
+										"enableStaging": true,
+										"stagingSettings": {
+											"linkedServiceName": {
+												"referenceName": "linkedServicestaging",
+												"type": "LinkedServiceReference"
+											}
+										},
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "SqlServerTable",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "AzureSqlTable",
+											"type": "DatasetReference",
+											"parameters": {
+												"AzTableName": {
+													"value": "@item().TABLE_NAME",
+													"type": "Expression"
+												},
+												"AzSchema": {
+													"value": "@item().TABLE_SCHEMA",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"parameters": {
+					"tableList": {
+						"type": "array"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SqlServerTable')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable')]",
+				"[concat(variables('factoryId'), '/linkedServices/linkedServicestaging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GetTableListAndTriggerCopyData')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Parameterization",
+				"activities": [
+					{
+						"name": "LookupTableList",
+						"description": "Retrieve the table list from my database",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "USE [WideWorldImporters]\nGO\nSELECT TABLE_SCHEMA, TABLE_NAME FROM information_schema.TABLES WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'dbo' and TABLE_NAME like 'Person%'",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "TriggerCopy",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "LookupTableList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "IterateAndCopySQLTables",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": false,
+							"parameters": {
+								"tableList": {
+									"value": "@activity('LookupTableList').output.value",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SqlServerTable')]",
+				"[concat(variables('factoryId'), '/pipelines/IterateAndCopySQLTables')]"
 			]
 		}
 	]

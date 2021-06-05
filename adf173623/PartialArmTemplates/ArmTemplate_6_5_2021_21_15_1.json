@@ -6,22 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "adf173623"
-		},
-		"AzureBlobStorage_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage'"
-		},
-		"AzureSqlDatabase_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase'"
-		},
-		"SqlServeronprem_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlServeronprem'"
-		},
-		"linkedServicestaging_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'linkedServicestaging'"
 		}
 	},
 	"variables": {
@@ -89,15 +73,13 @@
 						"inputs": [
 							{
 								"referenceName": "SourceDataset_sow",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "DestinationDataset_sow",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					}
@@ -105,10 +87,7 @@
 				"annotations": [],
 				"lastPublishTime": "2021-06-03T15:24:01Z"
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SourceDataset_sow')]",
-				"[concat(variables('factoryId'), '/datasets/DestinationDataset_sow')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/GetTableListAndTriggerCopyData')]",
@@ -139,8 +118,7 @@
 							},
 							"dataset": {
 								"referenceName": "SqlServerTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -248,8 +226,7 @@
 									"inputs": [
 										{
 											"referenceName": "SqlServerTable",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									],
 									"outputs": [
@@ -282,8 +259,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable')]",
-				"[concat(variables('factoryId'), '/linkedServices/linkedServicestaging')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable')]"
 			]
 		},
 		{
@@ -342,70 +318,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DestinationDataset_sow')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "output",
-						"container": "adftutorial"
-					},
-					"columnDelimiter": "|",
-					"escapeChar": "\\",
-					"quoteChar": "'"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SourceDataset_sow')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "adftutorial"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": false,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SqlServerTable')]",
@@ -448,82 +361,6 @@
 					"schema": "dbo",
 					"table": "Persons"
 				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SqlServeronprem')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureBlobStorage_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureSqlDatabase_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeonprem",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeonprem')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServeronprem')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"connectionString": "[parameters('SqlServeronprem_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeonprem",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeonprem')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/linkedServicestaging')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('linkedServicestaging_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntimeonprem')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
 			},
 			"dependsOn": []
 		}
