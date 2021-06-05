@@ -5,6 +5,14 @@
 			"referenceName": "AzureSqlDatabase",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"AzTableName": {
+				"type": "string"
+			},
+			"AzSchema": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "Onpremtocloud"
 		},
