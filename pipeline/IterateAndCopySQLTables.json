@@ -4,7 +4,7 @@
 		"description": "On prem SQL DB to Azure Migration",
 		"activities": [
 			{
-				"name": "IterateAndCopySQLTables",
+				"name": "IterateSQLTables",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [],
@@ -15,7 +15,7 @@
 					},
 					"activities": [
 						{
-							"name": "IterateSQLTables",
+							"name": "Copy data1",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
