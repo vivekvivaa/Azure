@@ -2,6 +2,11 @@
 	"name": "IterateAndCopySQLTables",
 	"properties": {
 		"description": "On prem SQL DB to Azure Migration",
+		"parameters": {
+			"tableList": {
+				"type": "array"
+			}
+		},
 		"annotations": []
 	}
 }
