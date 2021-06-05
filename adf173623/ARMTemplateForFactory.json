@@ -133,7 +133,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "SqlServerSource",
-								"sqlReaderQuery": "USE [WideWorldImporters]\nGO\nSELECT TABLE_SCHEMA, TABLE_NAME FROM information_schema.TABLES WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'dbo' and TABLE_NAME like 'Person%'",
+								"sqlReaderQuery": "USE [WideWorldImporters];\nSELECT TABLE_SCHEMA, TABLE_NAME FROM information_schema.TABLES WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'dbo' and TABLE_NAME like 'Person%'",
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
