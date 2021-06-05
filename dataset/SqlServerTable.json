@@ -34,14 +34,8 @@
 			}
 		],
 		"typeProperties": {
-			"schema": {
-				"value": "@dataset().onpremschema",
-				"type": "Expression"
-			},
-			"table": {
-				"value": "@dataset().onpremtable",
-				"type": "Expression"
-			}
+			"schema": "dbo",
+			"table": "Persons"
 		}
 	}
 }
