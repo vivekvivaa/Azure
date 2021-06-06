@@ -10,15 +10,22 @@
 						"type": "DatasetReference"
 					},
 					"name": "source"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable",
+						"type": "DatasetReference"
+					},
+					"name": "Sourcetb1"
 				}
 			],
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "Rank1"
+					"name": "Join1"
 				}
 			],
-			"script": "source(output(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'select * from [WideWorldImporters].[dbo].[Persons1];',\n\tformat: 'query') ~> source\nsource rank(asc(FirstName, true),\n\toutput(PersonID as long),\n\tdense: true) ~> Rank1"
+			"script": "source(output(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'select * from [WideWorldImporters].[dbo].[Persons1];',\n\tformat: 'query') ~> source\nsource(output(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'select * from [WideWorldImportersDW].[dbo].[Persons3];',\n\tformat: 'query') ~> Sourcetb1\nsource, Sourcetb1 join(source@PersonID == @PersonID,\n\tjoinType:'outer',\n\tbroadcast: 'auto')~> Join1"
 		}
 	}
 }
