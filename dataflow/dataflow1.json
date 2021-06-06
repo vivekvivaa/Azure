@@ -1,0 +1,24 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "Rank1"
+				}
+			],
+			"script": "source(output(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'select * from [WideWorldImporters].[dbo].[Persons1];',\n\tformat: 'query') ~> source\nsource rank(asc(FirstName, true),\n\toutput(PersonID as long),\n\tdense: true) ~> Rank1"
+		}
+	}
+}
