@@ -11,6 +11,9 @@
 		"AzureSqlDatabase_connectionString": {
 			"value": ""
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
 		"SqlServeronprem_connectionString": {
 			"value": ""
 		},
