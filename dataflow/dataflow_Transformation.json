@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "dataflow_Transformation",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
