@@ -32,7 +32,7 @@
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "Persons2"
+			"table": "Persons"
 		}
 	}
 }
