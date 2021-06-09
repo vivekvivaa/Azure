@@ -10,7 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"container": "adfoutput"
+				"folderPath": "output",
+				"container": "adftutorial"
 			},
 			"columnDelimiter": "|",
 			"escapeChar": "\\",
