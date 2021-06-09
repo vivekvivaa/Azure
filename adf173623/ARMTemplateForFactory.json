@@ -467,7 +467,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"container": "adfoutput"
+						"folderPath": "output",
+						"container": "adftutorial"
 					},
 					"columnDelimiter": "|",
 					"escapeChar": "\\",
@@ -493,6 +494,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "*",
 						"container": "adfinput"
 					},
 					"columnDelimiter": ",",
