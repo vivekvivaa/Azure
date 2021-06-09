@@ -19,9 +19,7 @@
 						"referenceName": "SourceDataset_sow",
 						"type": "DatasetReference"
 					},
-					"fieldList": [
-						"childItems"
-					],
+					"fieldList": [],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
 						"enablePartitionDiscovery": false
@@ -67,7 +65,6 @@
 									"storeSettings": {
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": "adfinput",
 										"wildcardFileName": {
 											"value": "@item().name",
 											"type": "Expression"
@@ -101,7 +98,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "SourceDataset_sow",
+									"referenceName": "DelimitedsourceText",
 									"type": "DatasetReference"
 								}
 							],
