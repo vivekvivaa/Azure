@@ -98,7 +98,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "DelimitedsourceText",
+									"referenceName": "SourceDataset_sow",
 									"type": "DatasetReference"
 								}
 							],
