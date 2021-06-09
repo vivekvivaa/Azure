@@ -165,7 +165,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "*",
 						"container": "adfinput"
 					},
 					"columnDelimiter": ",",
@@ -531,7 +530,6 @@
 											"storeSettings": {
 												"type": "AzureBlobStorageReadSettings",
 												"recursive": true,
-												"wildcardFolderPath": "adfinput",
 												"wildcardFileName": {
 													"value": "@item().name",
 													"type": "Expression"
