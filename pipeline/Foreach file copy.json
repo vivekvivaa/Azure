@@ -108,7 +108,13 @@
 							"outputs": [
 								{
 									"referenceName": "DestinationDataset_sow",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"FileName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
