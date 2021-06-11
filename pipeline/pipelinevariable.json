@@ -29,7 +29,7 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": {
-										"value": "@item()",
+										"value": "concat('select * from [WideWorldImporters].[dbo].'.,@item())",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -65,7 +65,13 @@
 							"outputs": [
 								{
 									"referenceName": "DestinationDataset_sow",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"FileName": {
+											"value": "concat(@item(),'.csv')",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
