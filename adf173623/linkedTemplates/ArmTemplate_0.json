@@ -133,11 +133,20 @@
 					"referenceName": "AzureBlobStorage",
 					"type": "LinkedServiceReference"
 				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					}
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
 						"folderPath": "output",
 						"container": "adftutorial"
 					},
@@ -221,88 +230,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeonprem')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Copydata173623')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copy_sow",
-						"description": "Testing - Blob to Blob",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [
-							{
-								"name": "Source",
-								"value": "adftutorial//"
-							},
-							{
-								"name": "Destination",
-								"value": "adftutorial/output/"
-							}
-						],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings",
-									"skipLineCount": 0
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings",
-									"copyBehavior": "MergeFiles"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".csv"
-								}
-							},
-							"enableStaging": false,
-							"enableSkipIncompatibleRow": true,
-							"validateDataConsistency": false
-						},
-						"inputs": [
-							{
-								"referenceName": "SourceDataset_sow",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "DestinationDataset_sow",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"annotations": [],
-				"lastPublishTime": "2021-06-03T15:24:01Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SourceDataset_sow')]",
-				"[concat(variables('factoryId'), '/datasets/DestinationDataset_sow')]"
 			]
 		},
 		{
@@ -420,7 +347,12 @@
 										{
 											"referenceName": "DestinationDataset_sow",
 											"type": "DatasetReference",
-											"parameters": {}
+											"parameters": {
+												"FileName": {
+													"value": "@item()",
+													"type": "Expression"
+												}
+											}
 										}
 									]
 								}
@@ -756,7 +688,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipelinevaiable')]",
+			"name": "[concat(parameters('factoryName'), '/pipelinevariable')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -788,7 +720,7 @@
 										"source": {
 											"type": "SqlServerSource",
 											"sqlReaderQuery": {
-												"value": "@item()",
+												"value": "concat('select * from [WideWorldImporters].[dbo].'.,@item())",
 												"type": "Expression"
 											},
 											"queryTimeout": "02:00:00",
@@ -826,7 +758,12 @@
 										{
 											"referenceName": "DestinationDataset_sow",
 											"type": "DatasetReference",
-											"parameters": {}
+											"parameters": {
+												"FileName": {
+													"value": "@concat(item(),'.csv')",
+													"type": "Expression"
+												}
+											}
 										}
 									]
 								}
@@ -838,8 +775,8 @@
 					"Tablelist": {
 						"type": "Array",
 						"defaultValue": [
-							"select * from [WideWorldImporters].[dbo].[Persons]",
-							"select * from [WideWorldImporters].[dbo].[Persons1]"
+							"Persons",
+							"Persons1"
 						]
 					}
 				},
