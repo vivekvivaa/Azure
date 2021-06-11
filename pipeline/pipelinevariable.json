@@ -1,5 +1,5 @@
 {
-	"name": "pipelinevaiable",
+	"name": "pipelinevariable",
 	"properties": {
 		"activities": [
 			{
@@ -77,8 +77,8 @@
 			"Tablelist": {
 				"type": "Array",
 				"defaultValue": [
-					"select * from [WideWorldImporters].[dbo].[Persons]",
-					"select * from [WideWorldImporters].[dbo].[Persons1]"
+					"Persons",
+					"Persons1"
 				]
 			}
 		},
