@@ -436,7 +436,7 @@
 										"source": {
 											"type": "SqlServerSource",
 											"sqlReaderQuery": {
-												"value": "concat('select * from [WideWorldImporters].[dbo].',@item())",
+												"value": "@concat('select * from [WideWorldImporters].[dbo].',item())",
 												"type": "Expression"
 											},
 											"queryTimeout": "02:00:00",
