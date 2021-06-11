@@ -35,11 +35,36 @@
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
-								"enableStaging": false
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
 									"referenceName": "SqlServerTable",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DestinationDataset_sow",
 									"type": "DatasetReference"
 								}
 							]
@@ -50,7 +75,11 @@
 		],
 		"variables": {
 			"Tablelist": {
-				"type": "Array"
+				"type": "Array",
+				"defaultValue": [
+					"[select * from [WideWorldImporters].[dbo].[Persons]",
+					"  select * from [WideWorldImporters].[dbo].[Persons1]]"
+				]
 			}
 		},
 		"annotations": []
