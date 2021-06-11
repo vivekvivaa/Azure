@@ -1,0 +1,11 @@
+{
+	"name": "pipelinevaiable",
+	"properties": {
+		"variables": {
+			"Tablelist": {
+				"type": "Array"
+			}
+		},
+		"annotations": []
+	}
+}
