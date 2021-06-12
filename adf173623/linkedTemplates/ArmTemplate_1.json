@@ -1,0 +1,225 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf173623"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipelinevariable')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@variables('Tablelist')",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Lookup1",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": {
+												"value": "@concat('select count(1) as cnt from ',item())",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "SqlServerTable",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								},
+								{
+									"name": "If Condition1",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "Lookup1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@greater(activity('Lookup1').output.firstRow.cnt,0)",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Copy data1",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "7.00:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "@concat('select * from [WideWorldImporters].[dbo].',item())",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobStorageWriteSettings"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".csv"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "SqlServerTable",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "DestinationDataset_sow",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												]
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"variables": {
+					"Tablelist": {
+						"type": "Array",
+						"defaultValue": [
+							"Persons",
+							"Persons1",
+							"Persons2"
+						]
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GetTableListAndTriggerCopyData')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Parameterization",
+				"activities": [
+					{
+						"name": "LookupTableList",
+						"description": "Retrieve the table list from my database",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "USE [WideWorldImporters];\nSELECT TABLE_SCHEMA, TABLE_NAME FROM information_schema.TABLES WHERE TABLE_TYPE = 'BASE TABLE' and TABLE_SCHEMA = 'dbo' and TABLE_NAME like 'Person%'",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "TriggerCopy",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "LookupTableList",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "IterateAndCopySQLTables",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": false,
+							"parameters": {
+								"tableList": {
+									"value": "@activity('LookupTableList').output.value",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}

@@ -19,6 +19,9 @@
 		},
 		"linkedServicestaging_connectionString": {
 			"value": ""
+		},
+		"TestCosmosDb_connectionString": {
+			"value": ""
 		}
 	}
 }
