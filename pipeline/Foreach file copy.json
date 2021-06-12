@@ -151,10 +151,11 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "FileList",
-								"value": [
-									""
-								]
+								"variableName": "FileList_copy",
+								"value": {
+									"value": "@variables('FileList')",
+									"type": "Expression"
+								}
 							}
 						}
 					]
