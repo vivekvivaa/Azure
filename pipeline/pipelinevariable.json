@@ -14,8 +14,8 @@
 					},
 					"activities": [
 						{
-							"name": "Copy data1",
-							"type": "Copy",
+							"name": "Lookup1",
+							"type": "Lookup",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "7.00:00:00",
@@ -29,51 +29,100 @@
 								"source": {
 									"type": "SqlServerSource",
 									"sqlReaderQuery": {
-										"value": "@concat('select * from [WideWorldImporters].[dbo].',item())",
+										"value": "@concat('select count(1) as cnt from ',item())",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
-								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobStorageWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".csv"
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
-							},
-							"inputs": [
-								{
+								"dataset": {
 									"referenceName": "SqlServerTable",
 									"type": "DatasetReference"
 								}
-							],
-							"outputs": [
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
 								{
-									"referenceName": "DestinationDataset_sow",
-									"type": "DatasetReference",
-									"parameters": {
-										"FileName": {
-											"value": "@concat(item(), '_', formatDateTime(utcnow(),'MMddyyyy'),'.csv')\n\n",
-											"type": "Expression"
-										}
-									}
+									"activity": "Lookup1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
 								}
-							]
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greater(activity('Lookup1').output.firstRow.cnt,0)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy data1",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlServerSource",
+												"sqlReaderQuery": {
+													"value": "@concat('select * from [WideWorldImporters].[dbo].',item())",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												},
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ".csv"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "SqlServerTable",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "DestinationDataset_sow",
+												"type": "DatasetReference",
+												"parameters": {
+													"FileName": {
+														"value": "@concat(item(), '_', formatDateTime(utcnow(),'MMddyyyy'),'.csv')\n\n",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
 						}
 					]
 				}
@@ -84,7 +133,8 @@
 				"type": "Array",
 				"defaultValue": [
 					"Persons",
-					"Persons1"
+					"Persons1",
+					"Persons2"
 				]
 			}
 		},
