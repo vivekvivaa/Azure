@@ -122,6 +122,14 @@
 				}
 			}
 		],
+		"variables": {
+			"FileList": {
+				"type": "Array"
+			},
+			"FileList_copy": {
+				"type": "Array"
+			}
+		},
 		"annotations": []
 	}
 }
