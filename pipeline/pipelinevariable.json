@@ -111,13 +111,7 @@
 										"outputs": [
 											{
 												"referenceName": "DestinationDataset_sow",
-												"type": "DatasetReference",
-												"parameters": {
-													"FileName": {
-														"value": "@concat(item(), '_', formatDateTime(utcnow(),'MMddyyyy'),'.csv')\n\n",
-														"type": "Expression"
-													}
-												}
+												"type": "DatasetReference"
 											}
 										]
 									}
