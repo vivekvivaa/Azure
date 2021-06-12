@@ -25,7 +25,7 @@
 						}
 					},
 					"sink": {
-						"type": "SqlServerSink",
+						"type": "AzureSqlSink",
 						"tableOption": "autoCreate"
 					},
 					"enableStaging": false,
@@ -46,7 +46,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "SqlServerTable",
+						"referenceName": "AzureSqlTable2",
 						"type": "DatasetReference"
 					}
 				]
