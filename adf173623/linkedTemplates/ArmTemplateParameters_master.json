@@ -17,10 +17,10 @@
 		"SqlServeronprem_connectionString": {
 			"value": ""
 		},
-		"linkedServicestaging_connectionString": {
+		"TestCosmosDb_connectionString": {
 			"value": ""
 		},
-		"TestCosmosDb_connectionString": {
+		"linkedServicestaging_connectionString": {
 			"value": ""
 		},
 		"containerUri": {

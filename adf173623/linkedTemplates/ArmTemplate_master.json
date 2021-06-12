@@ -23,13 +23,13 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SqlServeronprem'"
 		},
-		"linkedServicestaging_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'linkedServicestaging'"
-		},
 		"TestCosmosDb_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'TestCosmosDb'"
+		},
+		"linkedServicestaging_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'linkedServicestaging'"
 		},
 		"containerUri": {
 			"type": "string",
@@ -64,11 +64,11 @@
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
 					},
-					"linkedServicestaging_connectionString": {
-						"value": "[parameters('linkedServicestaging_connectionString')]"
-					},
 					"TestCosmosDb_connectionString": {
 						"value": "[parameters('TestCosmosDb_connectionString')]"
+					},
+					"linkedServicestaging_connectionString": {
+						"value": "[parameters('linkedServicestaging_connectionString')]"
 					},
 					"AzureSqlDatabase_connectionString": {
 						"value": "[parameters('AzureSqlDatabase_connectionString')]"
