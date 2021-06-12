@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Product.csv.csv",
+				"fileName": "Excel_Test.xlsx",
 				"container": "adfinput"
 			},
 			"firstRowAsHeader": true
