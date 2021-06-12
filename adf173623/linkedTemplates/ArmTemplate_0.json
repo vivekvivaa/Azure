@@ -182,11 +182,12 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "Product.csv.csv",
 						"container": "adfinput"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
-					"firstRowAsHeader": false,
+					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
 				"schema": [
@@ -754,6 +755,48 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SourceDataset_sow",
+								"type": "DatasetReference"
+							},
+							"name": "ExcelSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DestinationDataset_sow",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Pivotsales"
+						},
+						{
+							"name": "MapDrifted1",
+							"description": "Creates an explicit mapping for each drifted column"
+						}
+					],
+					"script": "source(output(\n\t\tRegion as string,\n\t\tCountry as string,\n\t\tItemType as string,\n\t\t{Sales Channel} as string,\n\t\tOrderPriority as string,\n\t\tOrderID as short,\n\t\tUnitssold as short,\n\t\tUnitprice as short,\n\t\tUnitCost as short,\n\t\tTotalRevenue as integer,\n\t\tTotalCost as integer,\n\t\tTotalProfit as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\twildcardPaths:['*.csv']) ~> ExcelSource\nExcelSource pivot(groupBy({Sales Channel}),\n\tpivotBy(ItemType),\n\tPivotTotalRev = sum(TotalRevenue),\n\tcolumnNaming: '$N$V',\n\tlateral: true) ~> Pivotsales\nPivotsales derive(PivotTotalRevp1 = toLong(byName('PivotTotalRevp1')),\n\t\tPivotTotalRevp10 = toLong(byName('PivotTotalRevp10')),\n\t\tPivotTotalRevp12 = toLong(byName('PivotTotalRevp12')),\n\t\tPivotTotalRevp13 = toLong(byName('PivotTotalRevp13')),\n\t\tPivotTotalRevp14 = toLong(byName('PivotTotalRevp14')),\n\t\tPivotTotalRevp2 = toLong(byName('PivotTotalRevp2')),\n\t\tPivotTotalRevp3 = toLong(byName('PivotTotalRevp3')),\n\t\tPivotTotalRevp4 = toLong(byName('PivotTotalRevp4')),\n\t\tPivotTotalRevp5 = toLong(byName('PivotTotalRevp5')),\n\t\tPivotTotalRevp6 = toLong(byName('PivotTotalRevp6')),\n\t\tPivotTotalRevp8 = toLong(byName('PivotTotalRevp8')),\n\t\tPivotTotalRevp9 = toLong(byName('PivotTotalRevp9'))) ~> MapDrifted1\nMapDrifted1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_sow')]",
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_sow')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/IterateAndCopySQLTables')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -874,50 +917,6 @@
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTable')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dataflow_Transformation",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflow_Transformation",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"Sourcetb2": {},
-									"sourcetb1": {},
-									"target": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflow_Transformation')]"
 			]
 		}
 	]
