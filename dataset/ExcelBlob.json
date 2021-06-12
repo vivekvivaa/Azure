@@ -8,10 +8,9 @@
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
-			"sheetName": "Sheet1",
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "Excel_Test.xlsx",
+				"fileName": "Product.csv.csv",
 				"container": "adfinput"
 			},
 			"firstRowAsHeader": true
