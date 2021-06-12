@@ -16,16 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "ExcelSource",
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
-							"recursive": false,
-							"wildcardFileName": "*.xlsx",
+							"recursive": true,
 							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings",
-							"skipLineCount": 1
 						}
 					},
 					"sink": {
@@ -44,7 +39,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SourceDataset_sow",
+						"referenceName": "ExcelBlob",
 						"type": "DatasetReference"
 					}
 				],
