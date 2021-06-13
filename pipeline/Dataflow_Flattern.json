@@ -25,8 +25,33 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "dataflowflattern",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Error",
+					"value": {
+						"value": "@activity('dataflowflattern').output.Error.Messages",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"Error": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
