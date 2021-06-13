@@ -41,7 +41,7 @@
 				"typeProperties": {
 					"variableName": "Error",
 					"value": {
-						"value": "@activity('dataflowflattern').Error.Messages",
+						"value": "@activity('dataflowflattern').output",
 						"type": "Expression"
 					}
 				}
