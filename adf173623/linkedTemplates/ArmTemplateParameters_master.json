@@ -23,6 +23,9 @@
 		"linkedServicestaging_connectionString": {
 			"value": ""
 		},
+		"AzureBlobStoragejson_connectionString": {
+			"value": ""
+		},
 		"containerUri": {
 			"value": ""
 		},

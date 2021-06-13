@@ -31,6 +31,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'linkedServicestaging'"
 		},
+		"AzureBlobStoragejson_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragejson'"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -69,6 +73,9 @@
 					},
 					"linkedServicestaging_connectionString": {
 						"value": "[parameters('linkedServicestaging_connectionString')]"
+					},
+					"AzureBlobStoragejson_connectionString": {
+						"value": "[parameters('AzureBlobStoragejson_connectionString')]"
 					},
 					"AzureSqlDatabase_connectionString": {
 						"value": "[parameters('AzureSqlDatabase_connectionString')]"
