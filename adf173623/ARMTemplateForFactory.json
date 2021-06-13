@@ -1255,7 +1255,7 @@
 							"name": "Flatten1"
 						}
 					],
-					"script": "source(output(\n\t\tname as string,\n\t\tlocation as string,\n\t\tsatellites as string[],\n\t\tgoods as (trade as boolean, customers as string[], orders as (orderId as string, orderTotal as double, shipped as (orderItems as (itemName as string, itemQty as string)[]))[])\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source1\nsource1 foldDown(unroll(goods.orders.shipped.orderItems),\n\tmapColumn(\n\t\ttrade = goods.trade,\n\t\tcustomers = goods.customers,\n\t\torderId = goods.orders.orderId,\n\t\torderTotal = goods.orders.orderTotal,\n\t\titemName = goods.orders.shipped.orderItems.itemName,\n\t\titemQty = goods.orders.shipped.orderItems.itemQty\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['Flatternjson.csv'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> sink1"
+					"script": "source(output(\n\t\tname as string,\n\t\tlocation as string,\n\t\tsatellites as string[],\n\t\tgoods as (trade as boolean, customers as string[], orders as (orderId as string, orderTotal as double, shipped as (orderItems as (itemName as string, itemQty as string)[]))[])\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source1\nsource1 foldDown(unroll(goods.customers),\n\tmapColumn(\n\t\ttrade = goods.trade,\n\t\tcustomers = goods.customers,\n\t\torders = goods.orders\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['Flatternjson.csv'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> sink1"
 				}
 			},
 			"dependsOn": [
@@ -1398,8 +1398,33 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "dataflowflattern",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Error",
+							"value": {
+								"value": "@activity('dataflowflattern').output.Error.Messages",
+								"type": "Expression"
+							}
+						}
 					}
 				],
+				"variables": {
+					"Error": {
+						"type": "String"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
