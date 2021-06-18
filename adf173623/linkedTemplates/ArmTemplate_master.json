@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage'"
 		},
+		"AzureBlobStoragejson_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragejson'"
+		},
 		"AzureSqlDatabase_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase'"
@@ -30,10 +34,6 @@
 		"linkedServicestaging_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'linkedServicestaging'"
-		},
-		"AzureBlobStoragejson_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragejson'"
 		},
 		"containerUri": {
 			"type": "string",
@@ -65,6 +65,9 @@
 					"AzureBlobStorage_connectionString": {
 						"value": "[parameters('AzureBlobStorage_connectionString')]"
 					},
+					"AzureBlobStoragejson_connectionString": {
+						"value": "[parameters('AzureBlobStoragejson_connectionString')]"
+					},
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
 					},
@@ -73,9 +76,6 @@
 					},
 					"linkedServicestaging_connectionString": {
 						"value": "[parameters('linkedServicestaging_connectionString')]"
-					},
-					"AzureBlobStoragejson_connectionString": {
-						"value": "[parameters('AzureBlobStoragejson_connectionString')]"
 					},
 					"AzureSqlDatabase_connectionString": {
 						"value": "[parameters('AzureSqlDatabase_connectionString')]"

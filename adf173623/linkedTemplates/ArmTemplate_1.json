@@ -13,6 +13,103 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/checkdimid')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "csvfile",
+								"type": "DatasetReference"
+							},
+							"name": "sourceinputfile"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference"
+							},
+							"name": "sourceDbtable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference"
+							},
+							"name": "Azsink"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "computehash"
+						},
+						{
+							"name": "checkdimid"
+						},
+						{
+							"name": "Newrecordsplit"
+						},
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"script": "source(output(\n\t\tdinid as string,\n\t\tname as string,\n\t\tage as string,\n\t\thomecountry as string,\n\t\tiplteam as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> sourceinputfile\nsource(output(\n\t\tdinid as integer,\n\t\tName as string,\n\t\tAge as integer,\n\t\tHomeCountry as string,\n\t\tiplteam as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> sourceDbtable\nsourceinputfile derive(hash = toBinary(md5(dinid+iplteam)),\n\t\tid = toInteger(dinid)) ~> computehash\ncomputehash, sourceDbtable lookup(id == sourceDbtable@dinid,\n\tmultiple: false,\n\tpickup: 'any',\n\tbroadcast: 'auto')~> checkdimid\ncheckdimid split(isNull(sourceDbtable@dinid),\n\t!isNull(sourceDbtable@dinid),\n\tdisjoint: false) ~> Newrecordsplit@(Newrecords, Updaterecord)\nNewrecordsplit@Updaterecord alterRow(updateIf(true())) ~> AlterRow1\nNewrecordsplit@Newrecords sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tdinid as integer,\n\t\tName as string,\n\t\tAge as integer,\n\t\tHomeCountry as string,\n\t\tiplteam as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tdinid = id,\n\t\tName = Newrecordsplit@Newrecords@name,\n\t\tAge = Newrecordsplit@Newrecords@age,\n\t\tHomeCountry = Newrecordsplit@Newrecords@homecountry,\n\t\tiplteam = Newrecordsplit@Newrecords@iplteam\n\t)) ~> Azsink\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tdinid as integer,\n\t\tName as string,\n\t\tAge as integer,\n\t\tHomeCountry as string,\n\t\tiplteam as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['dinid'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tdinid = Newrecordsplit@Updaterecord@dinid,\n\t\tName = Newrecordsplit@Updaterecord@name,\n\t\tAge = Newrecordsplit@Updaterecord@age,\n\t\tHomeCountry = Newrecordsplit@Updaterecord@homecountry,\n\t\tiplteam = Newrecordsplit@Updaterecord@iplteam\n\t)) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SourceDataset_sow",
+								"type": "DatasetReference"
+							},
+							"name": "ExcelSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DestinationDataset_sow",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Pivotsales"
+						},
+						{
+							"name": "MapDrifted1",
+							"description": "Creates an explicit mapping for each drifted column"
+						}
+					],
+					"script": "source(output(\n\t\tRegion as string,\n\t\tCountry as string,\n\t\tItemType as string,\n\t\t{Sales Channel} as string,\n\t\tOrderPriority as string,\n\t\tOrderID as short,\n\t\tUnitssold as short,\n\t\tUnitprice as short,\n\t\tUnitCost as short,\n\t\tTotalRevenue as integer,\n\t\tTotalCost as integer,\n\t\tTotalProfit as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\twildcardPaths:['*.csv']) ~> ExcelSource\nExcelSource pivot(groupBy(ItemType),\n\tpivotBy({Sales Channel}),\n\tPivotTotalRev = sum(TotalRevenue),\n\tcolumnNaming: '$N$V',\n\tlateral: true) ~> Pivotsales\nPivotsales derive(PivotTotalRevp1 = toLong(byName('PivotTotalRevp1')),\n\t\tPivotTotalRevp10 = toLong(byName('PivotTotalRevp10')),\n\t\tPivotTotalRevp12 = toLong(byName('PivotTotalRevp12')),\n\t\tPivotTotalRevp13 = toLong(byName('PivotTotalRevp13')),\n\t\tPivotTotalRevp14 = toLong(byName('PivotTotalRevp14')),\n\t\tPivotTotalRevp2 = toLong(byName('PivotTotalRevp2')),\n\t\tPivotTotalRevp3 = toLong(byName('PivotTotalRevp3')),\n\t\tPivotTotalRevp4 = toLong(byName('PivotTotalRevp4')),\n\t\tPivotTotalRevp5 = toLong(byName('PivotTotalRevp5')),\n\t\tPivotTotalRevp6 = toLong(byName('PivotTotalRevp6')),\n\t\tPivotTotalRevp8 = toLong(byName('PivotTotalRevp8')),\n\t\tPivotTotalRevp9 = toLong(byName('PivotTotalRevp9'))) ~> MapDrifted1\nMapDrifted1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['pivot.csv'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflow_Transformation')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -52,7 +149,7 @@
 							"name": "Join1"
 						}
 					],
-					"script": "source(output(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT * FROM [dbo].[Persons]',\n\tformat: 'query') ~> Sourcetb2\nsource(output(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT * FROM [dbo].[Persons1]',\n\tformat: 'query') ~> sourcetb1\nJoin1 select(mapColumn(\n\t\tPersonID = Sourcetb2@PersonID,\n\t\tLastName = Sourcetb2@LastName,\n\t\tFirstName = Sourcetb2@FirstName,\n\t\tAddress = Sourcetb2@Address,\n\t\tCity = Sourcetb2@City,\n\t\tLastName2 = sourcetb1@LastName,\n\t\tFirstName2 = sourcetb1@FirstName,\n\t\tAddress2 = sourcetb1@Address,\n\t\tCity2 = sourcetb1@City\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSourcetb2, sourcetb1 join(Sourcetb2@PersonID == sourcetb1@PersonID,\n\tjoinType:'outer',\n\tbroadcast: 'auto')~> Join1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\terrorHandlingOption: 'stopOnFirstError') ~> target"
+					"script": "source(output(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT * FROM [dbo].[Persons]',\n\tformat: 'query') ~> Sourcetb2\nsource(output(\n\t\tPersonID as integer,\n\t\tLastName as string,\n\t\tFirstName as string,\n\t\tAddress as string,\n\t\tCity as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT * FROM [dbo].[Persons1]',\n\tformat: 'query') ~> sourcetb1\nJoin1 select(mapColumn(\n\t\tPersonID = Sourcetb2@PersonID,\n\t\tLastName = Sourcetb2@LastName,\n\t\tFirstName = Sourcetb2@FirstName,\n\t\tAddress = Sourcetb2@Address,\n\t\tCity = Sourcetb2@City,\n\t\tLastName2 = sourcetb1@LastName,\n\t\tFirstName2 = sourcetb1@FirstName,\n\t\tAddress2 = sourcetb1@Address,\n\t\tCity2 = sourcetb1@City\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nSourcetb2, sourcetb1 join(Sourcetb2@PersonID == sourcetb1@PersonID,\n\tjoinType:'outer',\n\tbroadcast: 'auto')~> Join1\nSelect1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tdinid as integer,\n\t\tName as string,\n\t\tAge as integer,\n\t\tHomeCountry as string,\n\t\tiplteam as string\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\terrorHandlingOption: 'stopOnFirstError') ~> target"
 				}
 			},
 			"dependsOn": []
@@ -87,10 +184,78 @@
 							"name": "Flatten1"
 						}
 					],
-					"script": "source(output(\n\t\tname as string,\n\t\tlocation as string,\n\t\tsatellites as string[],\n\t\tgoods as (trade as boolean, customers as string[], orders as (orderId as string, orderTotal as double, shipped as (orderItems as (itemName as string, itemQty as string)[]))[])\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 foldDown(unroll(goods.customers),\n\tmapColumn(\n\t\tcustomers = goods.customers\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['Flatternjson.csv'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> sink1"
+					"script": "source(output(\n\t\tname as string,\n\t\tlocation as string,\n\t\tsatellites as string[],\n\t\tgoods as (trade as boolean, customers as string[], orders as (orderId as string, orderTotal as double, shipped as (orderItems as (itemName as string, itemQty as string)[]))[])\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tdocumentForm: 'singleDocument') ~> source1\nsource1 foldDown(unroll(goods.customers),\n\tmapColumn(\n\t\tcustomers = goods.customers\n\t),\n\tskipDuplicateMapInputs: false,\n\tskipDuplicateMapOutputs: false) ~> Flatten1\nFlatten1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['Flatternjson.csv'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> sink1"
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Dataflow_Flattern')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dataflowflattern",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflowflattern",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "dataflowflattern",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "Error",
+							"value": {
+								"value": "@activity('dataflowflattern').output",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"variables": {
+					"Error": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflowflattern')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/IterateAndCopySQLTables')]",
@@ -294,7 +459,54 @@
 				],
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_incrementalupdate')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "checkdimid",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "checkdimid",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceinputfile": {},
+									"sourceDbtable": {},
+									"Azsink": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/checkdimid')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/pipelinevariable')]",
@@ -438,74 +650,6 @@
 				"annotations": []
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Dataflow_Flattern')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "dataflowflattern",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflowflattern",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "Set variable1",
-						"type": "SetVariable",
-						"dependsOn": [
-							{
-								"activity": "dataflowflattern",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "Error",
-							"value": {
-								"value": "@activity('dataflowflattern').Error.Messages",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"variables": {
-					"Error": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflowflattern')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/GetTableListAndTriggerCopyData')]",
