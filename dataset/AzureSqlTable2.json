@@ -9,24 +9,25 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "PersonID",
+				"name": "dinid",
 				"type": "int",
 				"precision": 10
 			},
 			{
-				"name": "LastName",
+				"name": "Name",
 				"type": "varchar"
 			},
 			{
-				"name": "FirstName",
+				"name": "Age",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "HomeCountry",
 				"type": "varchar"
 			},
 			{
-				"name": "Address",
-				"type": "varchar"
-			},
-			{
-				"name": "City",
+				"name": "iplteam",
 				"type": "varchar"
 			}
 		],
