@@ -775,6 +775,13 @@
 														"value": "@activity('Copy data from Onprem to cloud').Error.Message",
 														"type": "Expression"
 													}
+												},
+												{
+													"name": "Error2",
+													"value": {
+														"value": "@activity('Copy data from Onprem to cloud').Error.Value",
+														"type": "Expression"
+													}
 												}
 											],
 											"storeSettings": {
