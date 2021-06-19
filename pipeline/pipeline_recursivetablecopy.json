@@ -30,7 +30,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "ForEach from Table list",
 				"type": "ForEach",
 				"dependsOn": [
 					{
