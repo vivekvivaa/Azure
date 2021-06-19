@@ -881,7 +881,7 @@
 												{
 													"name": "Error",
 													"value": {
-														"value": "@activity('Copy data from Onprem to cloud').output",
+														"value": "@activity('Copy data from Onprem to cloud').Error.Message",
 														"type": "Expression"
 													}
 												}
