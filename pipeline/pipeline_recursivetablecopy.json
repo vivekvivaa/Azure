@@ -124,6 +124,33 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Data flow to capture etror",
+							"type": "ExecuteDataFlow",
+							"dependsOn": [
+								{
+									"activity": "Copy data from Onprem to cloud",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "1.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"compute": {
+									"coreCount": 8,
+									"computeType": "General"
+								},
+								"traceLevel": "Fine"
+							}
 						}
 					]
 				}
