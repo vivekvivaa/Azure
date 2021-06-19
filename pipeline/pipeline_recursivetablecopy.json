@@ -151,7 +151,7 @@
 										{
 											"name": "Error",
 											"value": {
-												"value": "@activity('Copy data from Onprem to cloud').output",
+												"value": "@string(activity('Copy data from Onprem to cloud').output)",
 												"type": "Expression"
 											}
 										}
