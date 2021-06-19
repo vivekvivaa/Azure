@@ -802,7 +802,10 @@
 										},
 										"sink": {
 											"type": "AzureSqlSink",
-											"tableOption": "autoCreate",
+											"preCopyScript": {
+												"value": "@{concat( 'CREATE TABLE ', item().Schema,'.', item().TableName, '(\n\t[PersonID] [int] NULL,\n\t[LastName] [varchar](255) NULL,\n\t[FirstName] [varchar](255) NULL,\n\t[Address] [varchar](255) NULL,\n\t[City] [varchar](255) NULL\n)')}",
+												"type": "Expression"
+											},
 											"disableMetricsCollection": false
 										},
 										"enableStaging": false,
@@ -837,9 +840,18 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "AzureSqlTable2",
+											"referenceName": "AzureSqlTable",
 											"type": "DatasetReference",
-											"parameters": {}
+											"parameters": {
+												"AzTableName": {
+													"value": "@item().TableName",
+													"type": "Expression"
+												},
+												"AzSchema": {
+													"value": "@item().Schema",
+													"type": "Expression"
+												}
+											}
 										}
 									]
 								}
@@ -852,7 +864,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable')]",
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable_Param')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable')]"
 			]
 		},
 		{
