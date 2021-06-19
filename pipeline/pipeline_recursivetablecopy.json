@@ -126,7 +126,7 @@
 							]
 						},
 						{
-							"name": "Data flow to capture etror",
+							"name": "dataflow to capture error",
 							"type": "ExecuteDataFlow",
 							"dependsOn": [
 								{
@@ -145,6 +145,16 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
+								"dataflow": {
+									"referenceName": "dataflow to capture error",
+									"type": "DataFlowReference",
+									"parameters": {
+										"ErrorMsg": {
+											"value": "'@{activity('Copy data from Onprem to cloud').Error.Message}'",
+											"type": "Expression"
+										}
+									}
+								},
 								"compute": {
 									"coreCount": 8,
 									"computeType": "General"
