@@ -1,0 +1,7 @@
+{
+	"name": "pipeline_recursivetablecopy",
+	"properties": {
+		"description": "OnPrem to Cloud  - recursive copy",
+		"annotations": []
+	}
+}
