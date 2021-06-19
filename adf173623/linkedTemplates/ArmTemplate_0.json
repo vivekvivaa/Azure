@@ -463,6 +463,32 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedTextError')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "adfoutput"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Foreach file copy')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -813,52 +839,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServerTable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SqlServeronprem",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Onpremtocloud"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [
-					{
-						"name": "PersonID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "LastName",
-						"type": "varchar"
-					},
-					{
-						"name": "FirstName",
-						"type": "varchar"
-					},
-					{
-						"name": "Address",
-						"type": "varchar"
-					},
-					{
-						"name": "City",
-						"type": "varchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Persons"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SqlServeronprem')]"
 			]
 		}
 	]
