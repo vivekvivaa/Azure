@@ -11,6 +11,9 @@
 			},
 			"AzSchema": {
 				"type": "string"
+			},
+			"DB": {
+				"type": "string"
 			}
 		},
 		"folder": {
