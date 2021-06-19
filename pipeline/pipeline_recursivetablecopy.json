@@ -154,6 +154,13 @@
 												"value": "@activity('Copy data from Onprem to cloud').errors.Message",
 												"type": "Expression"
 											}
+										},
+										{
+											"name": "DataFlow",
+											"value": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											}
 										}
 									],
 									"storeSettings": {
@@ -179,6 +186,42 @@
 								"enableStaging": false,
 								"translator": {
 									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "Dummy",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"type": "String",
+												"physicalType": "String",
+												"ordinal": 1
+											}
+										},
+										{
+											"source": {
+												"name": "Error",
+												"type": "String"
+											},
+											"sink": {
+												"type": "String",
+												"physicalType": "String",
+												"ordinal": 2
+											}
+										},
+										{
+											"source": {
+												"name": "DataFlow",
+												"type": "String"
+											},
+											"sink": {
+												"type": "String",
+												"physicalType": "String",
+												"ordinal": 3
+											}
+										}
+									],
 									"typeConversion": true,
 									"typeConversionSettings": {
 										"allowDataTruncation": true,
