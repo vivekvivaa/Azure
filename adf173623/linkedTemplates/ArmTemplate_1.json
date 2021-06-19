@@ -772,7 +772,14 @@
 												{
 													"name": "Error",
 													"value": {
-														"value": "@activity('Copy data from Onprem to cloud').Error.Message",
+														"value": "@activity('Copy data from Onprem to cloud').error.Message",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "DataFlow",
+													"value": {
+														"value": "@pipeline().Pipeline",
 														"type": "Expression"
 													}
 												}
@@ -803,13 +810,36 @@
 											"mappings": [
 												{
 													"source": {
+														"name": "Dummy",
+														"type": "String",
+														"physicalType": "String"
+													},
+													"sink": {
+														"type": "String",
+														"physicalType": "String",
+														"ordinal": 1
+													}
+												},
+												{
+													"source": {
 														"name": "Error",
 														"type": "String"
 													},
 													"sink": {
 														"type": "String",
 														"physicalType": "String",
-														"ordinal": 1
+														"ordinal": 2
+													}
+												},
+												{
+													"source": {
+														"name": "DataFlow",
+														"type": "String"
+													},
+													"sink": {
+														"type": "String",
+														"physicalType": "String",
+														"ordinal": 3
 													}
 												}
 											],
@@ -831,9 +861,7 @@
 										{
 											"referenceName": "DelimitedTextError",
 											"type": "DatasetReference",
-											"parameters": {
-												"Filename": "ErrorTest.csv"
-											}
+											"parameters": {}
 										}
 									]
 								}
