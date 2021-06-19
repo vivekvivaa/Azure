@@ -831,7 +831,9 @@
 										{
 											"referenceName": "DelimitedTextError",
 											"type": "DatasetReference",
-											"parameters": {}
+											"parameters": {
+												"Filename": "ErrorTest.csv"
+											}
 										}
 									]
 								}
