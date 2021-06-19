@@ -189,7 +189,7 @@
 									"mappings": [
 										{
 											"source": {
-												"name": "Dummy",
+												"name": "John",
 												"type": "String",
 												"physicalType": "String"
 											},
@@ -201,13 +201,25 @@
 										},
 										{
 											"source": {
+												"name": " Doe",
+												"type": "String",
+												"physicalType": "String"
+											},
+											"sink": {
+												"type": "String",
+												"physicalType": "String",
+												"ordinal": 2
+											}
+										},
+										{
+											"source": {
 												"name": "Error",
 												"type": "String"
 											},
 											"sink": {
 												"type": "String",
 												"physicalType": "String",
-												"ordinal": 2
+												"ordinal": 3
 											}
 										},
 										{
@@ -218,7 +230,7 @@
 											"sink": {
 												"type": "String",
 												"physicalType": "String",
-												"ordinal": 3
+												"ordinal": 4
 											}
 										}
 									],
