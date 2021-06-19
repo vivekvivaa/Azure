@@ -151,7 +151,7 @@
 										{
 											"name": "Error",
 											"value": {
-												"value": "@activity('Copy data from Onprem to cloud').errors.Message",
+												"value": "@activity('Copy data from Onprem to cloud').error.Message",
 												"type": "Expression"
 											}
 										},
