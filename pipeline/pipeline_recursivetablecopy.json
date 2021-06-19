@@ -150,7 +150,7 @@
 									"type": "DataFlowReference",
 									"parameters": {
 										"ErrorMsg": {
-											"value": "'@{activity('Copy data from Onprem to cloud').Error.Message}'",
+											"value": "'@{'Error.Message'}'",
 											"type": "Expression"
 										}
 									}
