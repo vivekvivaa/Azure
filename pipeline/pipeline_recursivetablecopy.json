@@ -151,7 +151,7 @@
 										{
 											"name": "Error",
 											"value": {
-												"value": "@activity('Copy data from Onprem to cloud').output.errors[0].Message",
+												"value": "@activity('Copy data from Onprem to cloud').errors.Message",
 												"type": "Expression"
 											}
 										}
@@ -179,19 +179,6 @@
 								"enableStaging": false,
 								"translator": {
 									"type": "TabularTranslator",
-									"mappings": [
-										{
-											"source": {
-												"name": "Error",
-												"type": "String"
-											},
-											"sink": {
-												"type": "String",
-												"physicalType": "String",
-												"ordinal": 1
-											}
-										}
-									],
 									"typeConversion": true,
 									"typeConversionSettings": {
 										"allowDataTruncation": true,
@@ -208,10 +195,7 @@
 							"outputs": [
 								{
 									"referenceName": "DelimitedTextError",
-									"type": "DatasetReference",
-									"parameters": {
-										"Filename": "ErrorTest.csv"
-									}
+									"type": "DatasetReference"
 								}
 							]
 						}
