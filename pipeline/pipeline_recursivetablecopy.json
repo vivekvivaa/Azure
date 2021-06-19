@@ -110,8 +110,18 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "AzureSqlTable2",
-									"type": "DatasetReference"
+									"referenceName": "AzureSqlTable",
+									"type": "DatasetReference",
+									"parameters": {
+										"AzTableName": {
+											"value": "@item().TableName",
+											"type": "Expression"
+										},
+										"AzSchema": {
+											"value": "@item().Schema",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
