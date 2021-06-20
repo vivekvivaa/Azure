@@ -275,7 +275,17 @@
 						"referenceName": "pipeline_Sendmail",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"ErrorMessage": {
+							"value": "@activity('Copy data from Onprem to cloud').Error.Message",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
