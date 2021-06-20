@@ -313,7 +313,7 @@
 							"type": "Expression"
 						},
 						"ErrorMessage": {
-							"value": "'Error'",
+							"value": "@activity('Copy data from Onprem to cloud').error.Message",
 							"type": "Expression"
 						}
 					}
