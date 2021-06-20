@@ -287,6 +287,37 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "pipeline_Sendmail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEach from Table list",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pipeline_Sendmail",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"PipelineName": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"ErrorMessage": {
+							"value": "@activity('Copy data from Onprem to cloud').Error.Message",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"annotations": []
