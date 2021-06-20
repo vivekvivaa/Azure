@@ -280,7 +280,7 @@
 								},
 								"method": "POST",
 								"body": {
-									"value": "{\n\"Pipeline\":\"pipeline().Pipeline\",\n\"ErrorMessage\":\"@activity('Copy data from Onprem to cloud').Error.Message\"\n}",
+									"value": "{\n\"Pipeline\":\"@{pipeline().Pipeline}\",\n\"ErrorMessage\":\"@{activity('Copy data from Onprem to cloud').Error.Message}\"\n}",
 									"type": "Expression"
 								}
 							}
