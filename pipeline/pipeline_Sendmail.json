@@ -13,7 +13,11 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "Test"
+					}
+				],
 				"typeProperties": {
 					"method": "POST",
 					"body": {
@@ -23,6 +27,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"ErrorText": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }
