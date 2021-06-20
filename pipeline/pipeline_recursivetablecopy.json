@@ -313,7 +313,7 @@
 							"type": "Expression"
 						},
 						"ErrorMessage": {
-							"value": "@activity('Lookup1').output.value",
+							"value": "@activity('Logic App web to send email').output.value",
 							"type": "Expression"
 						}
 					}
