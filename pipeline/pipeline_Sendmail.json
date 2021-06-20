@@ -28,7 +28,10 @@
 			}
 		],
 		"parameters": {
-			"ErrorText": {
+			"PipelineName": {
+				"type": "string"
+			},
+			"ErrorMessage": {
 				"type": "string"
 			}
 		},
