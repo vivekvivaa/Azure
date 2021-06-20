@@ -253,39 +253,39 @@
 									"type": "DatasetReference"
 								}
 							]
+						},
+						{
+							"name": "Web1",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Copy data for error flow",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"url": {
+									"value": "https://prod-25.southindia.logic.azure.com:443/workflows/ed42666c031c4f95bde8bc51533552ef/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=PfveZTRw6SIrcG4WxejRfHebP2ul5zEgt5pzjPT3_YM",
+									"type": "Expression"
+								},
+								"method": "POST",
+								"body": {
+									"value": "{\n\"Pipeline\":\"@pipeline().parameters.PipelineName\",\n\"ErrorMessage\":\"@pipeline().parameters.ErrorMessage\"\n}",
+									"type": "Expression"
+								}
+							}
 						}
 					]
-				}
-			},
-			{
-				"name": "pipeline_Sendmail",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "ForEach from Table list",
-						"dependencyConditions": [
-							"Failed",
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "pipeline_Sendmail",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"PipelineName": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"ErrorMessage": {
-							"value": "@activity('Copy data from Onprem to cloud').Error.Message",
-							"type": "Expression"
-						}
-					}
 				}
 			}
 		],
