@@ -27,6 +27,14 @@
 				}
 			}
 		],
+		"variables": {
+			"Pipeline": {
+				"type": "String"
+			},
+			"ErrorMessage": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
