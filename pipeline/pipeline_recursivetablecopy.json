@@ -256,6 +256,27 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "pipeline_Sendmail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEach from Table list",
+						"dependencyConditions": [
+							"Failed",
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pipeline_Sendmail",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"annotations": []
