@@ -309,7 +309,7 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"Pipeline": {
-							"value": "'Pipeline'",
+							"value": "@pipeline().Pipeline",
 							"type": "Expression"
 						},
 						"ErrorMessage": {
