@@ -935,6 +935,38 @@
 											"parameters": {}
 										}
 									]
+								},
+								{
+									"name": "Logic App web to send email",
+									"type": "WebActivity",
+									"dependsOn": [
+										{
+											"activity": "Copy data for error flow",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": {
+											"value": "https://prod-25.southindia.logic.azure.com:443/workflows/ed42666c031c4f95bde8bc51533552ef/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=PfveZTRw6SIrcG4WxejRfHebP2ul5zEgt5pzjPT3_YM",
+											"type": "Expression"
+										},
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "{\n\"Pipeline\":\"@{pipeline().Pipeline}\",\n\"ErrorMessage\":\"@{activity('Copy data from Onprem to cloud').Error.Message}\"\n}",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -946,7 +978,6 @@
 							{
 								"activity": "ForEach from Table list",
 								"dependencyConditions": [
-									"Failed",
 									"Succeeded"
 								]
 							}
@@ -959,12 +990,12 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"PipelineName": {
+								"Pipeline": {
 									"value": "@pipeline().Pipeline",
 									"type": "Expression"
 								},
 								"ErrorMessage": {
-									"value": "@activity('Copy data from Onprem to cloud').Error.Message",
+									"value": "@pipeline().TriggerName",
 									"type": "Expression"
 								}
 							}

@@ -122,7 +122,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Web1",
+						"name": "Send email via Pipeline",
 						"type": "WebActivity",
 						"dependsOn": [],
 						"policy": {
@@ -141,14 +141,14 @@
 							"method": "POST",
 							"headers": {},
 							"body": {
-								"value": "{\n\"Pipeline\":\"@pipeline().parameters.PipelineName\",\n\"ErrorMessage\":\"@pipeline().parameters.ErrorMessage\"\n}",
+								"value": "{\n\"Pipeline\":\"@{pipeline().parameters.Pipeline}\",\n\"ErrorMessage\":\"@{pipeline().parameters.ErrorMessage}\"\n}",
 								"type": "Expression"
 							}
 						}
 					}
 				],
 				"parameters": {
-					"PipelineName": {
+					"Pipeline": {
 						"type": "string"
 					},
 					"ErrorMessage": {
