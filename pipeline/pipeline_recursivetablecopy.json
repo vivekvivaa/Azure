@@ -295,8 +295,7 @@
 					{
 						"activity": "ForEach from Table list",
 						"dependencyConditions": [
-							"Succeeded",
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
@@ -313,7 +312,7 @@
 							"type": "Expression"
 						},
 						"ErrorMessage": {
-							"value": "@pipeline().TriggerTime",
+							"value": "@activity('Copy data from Onprem to cloud').error.Message",
 							"type": "Expression"
 						}
 					}
