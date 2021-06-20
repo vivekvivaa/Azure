@@ -27,12 +27,9 @@
 				}
 			}
 		],
-		"variables": {
-			"Pipeline": {
-				"type": "String"
-			},
-			"ErrorMessage": {
-				"type": "String"
+		"parameters": {
+			"Test": {
+				"type": "string"
 			}
 		},
 		"annotations": []
