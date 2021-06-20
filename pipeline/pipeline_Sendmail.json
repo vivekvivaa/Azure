@@ -27,14 +27,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"PipelineName": {
-				"type": "string"
-			},
-			"ErrorMessage": {
-				"type": "string"
-			}
-		},
 		"annotations": []
 	}
 }
