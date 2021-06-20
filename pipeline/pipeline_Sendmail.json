@@ -13,15 +13,11 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "Test"
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"method": "POST",
 					"body": {
-						"value": "{\n\"Pipeline\": \"@pipeline().Pipeline\",\n\"Error Message\": \n}",
+						"value": "{\n\"Pipeline\":\"pipeline().parameters.PipelineName\",\n\"ErrorMessage\":\"@pipeline().parameters.ErrorMessage\"\n}",
 						"type": "Expression"
 					}
 				}
