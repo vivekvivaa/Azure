@@ -309,7 +309,7 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"Test": {
-							"value": "@pipeline().Pipeline",
+							"value": "@activity('Copy data from Onprem to cloud').output",
 							"type": "Expression"
 						}
 					}
