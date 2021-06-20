@@ -21,7 +21,7 @@
 					},
 					"method": "POST",
 					"body": {
-						"value": "@pipeline().parameters.Test",
+						"value": "{\n@pipeline().parameters.Test\n}",
 						"type": "Expression"
 					}
 				}
