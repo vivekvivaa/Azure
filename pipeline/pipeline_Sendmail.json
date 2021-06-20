@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Web1",
+				"name": "Send email via Pipeline",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
@@ -21,14 +21,17 @@
 					},
 					"method": "POST",
 					"body": {
-						"value": "{\n@pipeline().parameters.Test\n}",
+						"value": "{\n\"Pipeline\":\"@{pipeline().parameters.Pipeline}\",\n\"ErrorMessage\":\"@{pipeline().parameters.ErrorMessage}\"\n}",
 						"type": "Expression"
 					}
 				}
 			}
 		],
 		"parameters": {
-			"Test": {
+			"Pipeline": {
+				"type": "string"
+			},
+			"ErrorMessage": {
 				"type": "string"
 			}
 		},
