@@ -306,7 +306,17 @@
 						"referenceName": "pipeline_Sendmail",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"Pipeline": {
+							"value": "'Pipeline'",
+							"type": "Expression"
+						},
+						"ErrorMessage": {
+							"value": "'Error'",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
