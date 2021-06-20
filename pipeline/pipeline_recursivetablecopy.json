@@ -306,13 +306,7 @@
 						"referenceName": "pipeline_Sendmail",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"Test": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						}
-					}
+					"waitOnCompletion": true
 				}
 			}
 		],
