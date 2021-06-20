@@ -13,6 +13,64 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"AzTableName": {
+						"type": "string"
+					},
+					"AzSchema": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Onpremtocloud"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "PersonID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "LastName",
+						"type": "varchar"
+					},
+					{
+						"name": "FirstName",
+						"type": "varchar"
+					},
+					{
+						"name": "Address",
+						"type": "varchar"
+					},
+					{
+						"name": "City",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().AzSchema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().AzTableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SqlServerTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -481,7 +539,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SqlServerTable')]"
+				"[concat(variables('factoryId'), '/datasets/SqlServerTable')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable')]"
 			]
 		},
 		{
@@ -879,13 +938,45 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "pipeline_Sendmail",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ForEach from Table list",
+								"dependencyConditions": [
+									"Failed",
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pipeline_Sendmail",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"PipelineName": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
+								},
+								"ErrorMessage": {
+									"value": "@activity('Copy data from Onprem to cloud').Error.Message",
+									"type": "Expression"
+								}
+							}
+						}
 					}
 				],
 				"annotations": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable')]",
-				"[concat(variables('factoryId'), '/datasets/SqlServerTable_Param')]"
+				"[concat(variables('factoryId'), '/datasets/SqlServerTable_Param')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable')]"
 			]
 		},
 		{
