@@ -312,7 +312,7 @@
 							"type": "Expression"
 						},
 						"ErrorMessage": {
-							"value": "@activity('Copy data from Onprem to cloud').error.Message",
+							"value": "@pipeline().TriggerName",
 							"type": "Expression"
 						}
 					}
