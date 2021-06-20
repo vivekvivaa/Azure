@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"method": "POST",
 					"body": {
-						"value": "{\n\"Pipeline\":\"pipeline().parameters.PipelineName\",\n\"ErrorMessage\":\"@pipeline().parameters.ErrorMessage\"\n}",
+						"value": "{\n\"Pipeline\":\"@pipeline().parameters.PipelineName\",\n\"ErrorMessage\":\"@pipeline().parameters.ErrorMessage\"\n}",
 						"type": "Expression"
 					}
 				}
