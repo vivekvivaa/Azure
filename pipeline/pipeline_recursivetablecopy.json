@@ -132,7 +132,8 @@
 								{
 									"activity": "Copy data from Onprem to cloud",
 									"dependencyConditions": [
-										"Failed"
+										"Failed",
+										"Succeeded"
 									]
 								}
 							],
