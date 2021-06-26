@@ -1,0 +1,314 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf173623"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_recursivetablecopy')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "OnPrem to Cloud  - recursive copy",
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "select * from [WideWorldImporters].[dbo].[Param]",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "SqlServerTable",
+								"type": "DatasetReference"
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach from Table list",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup1').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy data from Onprem to cloud",
+									"description": "Table recursive copy",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": {
+												"value": "@concat('select * from ',item().DB,'.',item().Schema,'.',item().TableName)",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"preCopyScript": {
+												"value": "@{concat( 'CREATE TABLE ', item().Schema,'.', item().TableName, '(\n\t[PersonID] [int] NULL,\n\t[LastName] [varchar](255) NULL,\n\t[FirstName] [varchar](255) NULL,\n\t[Address] [varchar](255) NULL,\n\t[City] [varchar](255) NULL\n)')}",
+												"type": "Expression"
+											},
+											"disableMetricsCollection": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "SqlServerTable_Param",
+											"type": "DatasetReference",
+											"parameters": {
+												"DB": {
+													"value": "@item().DB",
+													"type": "Expression"
+												},
+												"Schema": {
+													"value": "@item().Schema",
+													"type": "Expression"
+												},
+												"TableName": {
+													"value": "@item().TableName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "AzureSqlTable",
+											"type": "DatasetReference",
+											"parameters": {
+												"AzTableName": {
+													"value": "@item().TableName",
+													"type": "Expression"
+												},
+												"AzSchema": {
+													"value": "@item().Schema",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Copy data for error flow",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Copy data from Onprem to cloud",
+											"dependencyConditions": [
+												"Failed",
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"additionalColumns": [
+												{
+													"name": "Error",
+													"value": {
+														"value": "@activity('Copy data from Onprem to cloud').error.Message",
+														"type": "Expression"
+													}
+												},
+												{
+													"name": "DataFlow",
+													"value": {
+														"value": "@pipeline().Pipeline",
+														"type": "Expression"
+													}
+												}
+											],
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": false,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".csv"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"name": "John",
+														"type": "String",
+														"physicalType": "String"
+													},
+													"sink": {
+														"type": "String",
+														"physicalType": "String",
+														"ordinal": 1
+													}
+												},
+												{
+													"source": {
+														"name": " Doe",
+														"type": "String",
+														"physicalType": "String"
+													},
+													"sink": {
+														"type": "String",
+														"physicalType": "String",
+														"ordinal": 2
+													}
+												},
+												{
+													"source": {
+														"name": "Error",
+														"type": "String"
+													},
+													"sink": {
+														"type": "String",
+														"physicalType": "String",
+														"ordinal": 3
+													}
+												},
+												{
+													"source": {
+														"name": "DataFlow",
+														"type": "String"
+													},
+													"sink": {
+														"type": "String",
+														"physicalType": "String",
+														"ordinal": 4
+													}
+												}
+											],
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "SourceDataset_sow",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DelimitedTextError",
+											"type": "DatasetReference"
+										}
+									]
+								},
+								{
+									"name": "Logic App web to send email",
+									"type": "WebActivity",
+									"dependsOn": [
+										{
+											"activity": "Copy data for error flow",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": {
+											"value": "https://prod-25.southindia.logic.azure.com:443/workflows/ed42666c031c4f95bde8bc51533552ef/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=PfveZTRw6SIrcG4WxejRfHebP2ul5zEgt5pzjPT3_YM",
+											"type": "Expression"
+										},
+										"method": "POST",
+										"body": {
+											"value": "{\n\"Pipeline\":\"@{pipeline().Pipeline}\",\n\"ErrorMessage\":\"@{activity('Copy data from Onprem to cloud').Error.Message}\"\n}",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}
