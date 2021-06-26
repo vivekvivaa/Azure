@@ -287,36 +287,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "pipeline_Sendmail",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "ForEach from Table list",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "pipeline_Sendmail",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"Pipeline": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"ErrorMessage": {
-							"value": "@pipeline().TriggerName",
-							"type": "Expression"
-						}
-					}
-				}
 			}
 		],
 		"annotations": []
